@@ -6,6 +6,7 @@ require 'color'
 require 'text_box'
 require 'image_surface_extensions'
 require 'inline'
+require 'native_context_extensions'
 
 module CairoTools
   include Color
@@ -220,23 +221,5 @@ module CairoTools
   
   def clouds
     Cairo::ImageSurface.new(129, 129)
-  end
-end
-
-class Cairo::Context
-  inline(:C) do |builder|
-    builder.include '<stdlib.h>'
-    builder.include '<cairo.h>'
-    builder.include '<rb_cairo.h>'
-    builder.include '<intern.h>'
-    builder.add_compile_flags '`/opt/local/bin/pkg-config --cflags cairo`'
-    builder.add_compile_flags '-I/opt/local/lib/ruby/site_ruby/1.8/i686-darwin9/'
-    builder.add_compile_flags '-I/opt/local/lib/ruby/gems/1.8/gems/cairo-1.6.2/src'
-    builder.c %{
-      void paint_with_alpha(double alpha) {
-        cairo_t *cr = RVAL2CRCONTEXT(self);
-        cairo_paint_with_alpha(cr, alpha);
-      }
-    }
   end
 end
